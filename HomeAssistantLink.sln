@@ -1,0 +1,106 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34728.123
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Source", "Source", "{F49760DC-A875-4E40-AC58-6B73DE3F6237}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{9D3C2DA0-D976-4848-8DC4-42F11F2AEFFD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Unit", "Unit", "{AA9256F8-A164-4977-9B68-2768ADF4BDCD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Integration", "Integration", "{CF1C111A-7F23-46CD-8B65-5AF2C79CEE1E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeAssistantLink.Host.WebApi", "Source\HomeAssistantLink.Host.WebApi\HomeAssistantLink.Host.WebApi.csproj", "{213B47F9-A83F-4FF3-B837-E6D9EE319B42}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{773B2A77-486B-4F36-B7A9-33BA5F65FA16}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeAssistantLink.Clients", "Source\HomeAssistantLink.Clients\HomeAssistantLink.Clients.csproj", "{228AB356-88BE-4FBC-873B-31E48009289D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeAssistantLink.Domain", "Source\HomeAssistantLink.Domain\HomeAssistantLink.Domain.csproj", "{544315A9-A451-4683-9E79-67E33F9529FE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeAssistantLink.Monitors.Vpn", "Source\HomeAssistantLink.Monitors.Vpn\HomeAssistantLink.Monitors.Vpn.csproj", "{9FD77532-391C-45FB-AFA3-1E0353210C95}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeAssistantLink.Infrastructure", "Source\HomeAssistantLink.Infrastructure\HomeAssistantLink.Infrastructure.csproj", "{0D31F253-1102-4A41-9ED9-E6612FB7F249}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeAssistantLink.Monitors.WebCam", "Source\HomeAssistantLink.Monitors.WebCam\HomeAssistantLink.Monitors.WebCam.csproj", "{8D29B7BB-9FE1-4689-9B3C-39159EF14329}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeAssistantLink.Plugins.ShutDownComputer", "Source\HomeAssistantLink.Plugins.ShutDownComputer\HomeAssistantLink.Plugins.ShutDownComputer.csproj", "{AE8EA7AF-9B09-4AD2-A33B-D5D640187077}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeAssistantLink.DomainUnitTests", "Tests\Unit\HomeAssistantLink.DomainUnitTests\HomeAssistantLink.DomainUnitTests.csproj", "{03A7195B-7B1B-4BDE-838B-18BCFF5EB263}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeAssistantLink.Plugins.ShutDownComputerUnitTests", "Tests\Unit\HomeAssistantLink.Plugins.ShutDownComputerUnitTests\HomeAssistantLink.Plugins.ShutDownComputerUnitTests.csproj", "{8990F5A6-C383-4F2D-89DE-F3D5689DD597}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeAssistantLink.InfrastructureUnitTests", "Tests\Unit\HomeAssistantLink.InfrastructureUnitTests\HomeAssistantLink.InfrastructureUnitTests.csproj", "{A7E991B2-3713-46E3-8FF5-8361FA07989E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{213B47F9-A83F-4FF3-B837-E6D9EE319B42}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{213B47F9-A83F-4FF3-B837-E6D9EE319B42}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{213B47F9-A83F-4FF3-B837-E6D9EE319B42}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{213B47F9-A83F-4FF3-B837-E6D9EE319B42}.Release|Any CPU.Build.0 = Release|Any CPU
+		{228AB356-88BE-4FBC-873B-31E48009289D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{228AB356-88BE-4FBC-873B-31E48009289D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{228AB356-88BE-4FBC-873B-31E48009289D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{228AB356-88BE-4FBC-873B-31E48009289D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{544315A9-A451-4683-9E79-67E33F9529FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{544315A9-A451-4683-9E79-67E33F9529FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{544315A9-A451-4683-9E79-67E33F9529FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{544315A9-A451-4683-9E79-67E33F9529FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9FD77532-391C-45FB-AFA3-1E0353210C95}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9FD77532-391C-45FB-AFA3-1E0353210C95}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9FD77532-391C-45FB-AFA3-1E0353210C95}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9FD77532-391C-45FB-AFA3-1E0353210C95}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D31F253-1102-4A41-9ED9-E6612FB7F249}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D31F253-1102-4A41-9ED9-E6612FB7F249}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D31F253-1102-4A41-9ED9-E6612FB7F249}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D31F253-1102-4A41-9ED9-E6612FB7F249}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D29B7BB-9FE1-4689-9B3C-39159EF14329}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D29B7BB-9FE1-4689-9B3C-39159EF14329}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D29B7BB-9FE1-4689-9B3C-39159EF14329}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D29B7BB-9FE1-4689-9B3C-39159EF14329}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE8EA7AF-9B09-4AD2-A33B-D5D640187077}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE8EA7AF-9B09-4AD2-A33B-D5D640187077}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE8EA7AF-9B09-4AD2-A33B-D5D640187077}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE8EA7AF-9B09-4AD2-A33B-D5D640187077}.Release|Any CPU.Build.0 = Release|Any CPU
+		{03A7195B-7B1B-4BDE-838B-18BCFF5EB263}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03A7195B-7B1B-4BDE-838B-18BCFF5EB263}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03A7195B-7B1B-4BDE-838B-18BCFF5EB263}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03A7195B-7B1B-4BDE-838B-18BCFF5EB263}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8990F5A6-C383-4F2D-89DE-F3D5689DD597}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8990F5A6-C383-4F2D-89DE-F3D5689DD597}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8990F5A6-C383-4F2D-89DE-F3D5689DD597}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8990F5A6-C383-4F2D-89DE-F3D5689DD597}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A7E991B2-3713-46E3-8FF5-8361FA07989E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A7E991B2-3713-46E3-8FF5-8361FA07989E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A7E991B2-3713-46E3-8FF5-8361FA07989E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A7E991B2-3713-46E3-8FF5-8361FA07989E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{AA9256F8-A164-4977-9B68-2768ADF4BDCD} = {9D3C2DA0-D976-4848-8DC4-42F11F2AEFFD}
+		{CF1C111A-7F23-46CD-8B65-5AF2C79CEE1E} = {9D3C2DA0-D976-4848-8DC4-42F11F2AEFFD}
+		{213B47F9-A83F-4FF3-B837-E6D9EE319B42} = {F49760DC-A875-4E40-AC58-6B73DE3F6237}
+		{228AB356-88BE-4FBC-873B-31E48009289D} = {F49760DC-A875-4E40-AC58-6B73DE3F6237}
+		{544315A9-A451-4683-9E79-67E33F9529FE} = {F49760DC-A875-4E40-AC58-6B73DE3F6237}
+		{9FD77532-391C-45FB-AFA3-1E0353210C95} = {F49760DC-A875-4E40-AC58-6B73DE3F6237}
+		{0D31F253-1102-4A41-9ED9-E6612FB7F249} = {F49760DC-A875-4E40-AC58-6B73DE3F6237}
+		{8D29B7BB-9FE1-4689-9B3C-39159EF14329} = {F49760DC-A875-4E40-AC58-6B73DE3F6237}
+		{AE8EA7AF-9B09-4AD2-A33B-D5D640187077} = {F49760DC-A875-4E40-AC58-6B73DE3F6237}
+		{03A7195B-7B1B-4BDE-838B-18BCFF5EB263} = {AA9256F8-A164-4977-9B68-2768ADF4BDCD}
+		{8990F5A6-C383-4F2D-89DE-F3D5689DD597} = {AA9256F8-A164-4977-9B68-2768ADF4BDCD}
+		{A7E991B2-3713-46E3-8FF5-8361FA07989E} = {AA9256F8-A164-4977-9B68-2768ADF4BDCD}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A150A066-7A7C-40FA-9A47-83D1D0698A33}
+	EndGlobalSection
+EndGlobal

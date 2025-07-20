@@ -1,0 +1,6 @@
+<Project>
+  <!-- StyleCop Analyzers configuration -->
+  <ItemGroup>
+    <PackageReference Include="StyleCop.Analyzers.Unstable" Version="1.2.0.556" PrivateAssets="all" />
+ </ItemGroup>
+</Project>

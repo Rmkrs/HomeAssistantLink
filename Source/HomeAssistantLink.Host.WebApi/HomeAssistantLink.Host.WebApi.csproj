@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <InvariantGlobalization>true</InvariantGlobalization>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Hosting.WindowsServices" Version="8.0.4" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.4" />
+    <PackageReference Include="dotenv.net" Version="3.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="8.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\HomeAssistantLink.Clients\HomeAssistantLink.Clients.csproj" />
+    <ProjectReference Include="..\HomeAssistantLink.Domain\HomeAssistantLink.Domain.csproj" />
+    <ProjectReference Include="..\HomeAssistantLink.Infrastructure\HomeAssistantLink.Infrastructure.csproj" />
+    <ProjectReference Include="..\HomeAssistantLink.Monitors.Vpn\HomeAssistantLink.Monitors.Vpn.csproj" />
+    <ProjectReference Include="..\HomeAssistantLink.Monitors.WebCam\HomeAssistantLink.Monitors.WebCam.csproj" />
+    <ProjectReference Include="..\HomeAssistantLink.Plugins.ShutDownComputer\HomeAssistantLink.Plugins.ShutDownComputer.csproj" />
+  </ItemGroup>
+
+</Project>
