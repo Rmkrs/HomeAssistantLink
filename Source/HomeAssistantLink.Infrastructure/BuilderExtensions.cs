@@ -8,7 +8,9 @@ public static class BuilderExtensions
 {
     public static IHostApplicationBuilder AddInfrastructure(this IHostApplicationBuilder builder)
     {
+        builder.Services.AddSingleton<IClock, SystemClock>();
         builder.Services.AddSingleton<IDebounce, Debounce>();
+
         return builder;
     }
 }

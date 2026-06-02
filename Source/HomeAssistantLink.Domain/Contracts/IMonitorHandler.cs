@@ -2,7 +2,7 @@
 
 public interface IMonitorHandler
 {
-    void Start();
+    Task StartAsync(CancellationToken cancellationToken);
 
-    void Stop();
+    Task StopAsync(CancellationToken cancellationToken);
 }

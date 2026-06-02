@@ -1,30 +1,41 @@
 # HomeAssistantLink
 
 ![Build & Test](https://github.com/Rmkrs/HomeAssistantLink/actions/workflows/ci.yml/badge.svg)
-![.NET](https://img.shields.io/badge/.NET-8.0-blue)
+![.NET](https://img.shields.io/badge/.NET-10.0-blue)
 ![Platform](https://img.shields.io/badge/Platform-Windows-lightgrey)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-**HomeAssistantLink** is a .NET-powered Windows Service that links your PC or workstation to [Home Assistant](https://www.home-assistant.io/) via its REST API. It detects system-level states (like webcam or VPN activity) and updates Home Assistant entities in real-time — enabling fast and flexible automations.
+**HomeAssistantLink** is a small .NET-powered Windows service that links your PC or workstation to [Home Assistant](https://www.home-assistant.io/).
 
----
+It watches local system state, such as webcam usage or VPN connectivity, and publishes those changes to Home Assistant through its REST API. It also exposes a small local API that Home Assistant can call back into, for example to trigger local plugins such as shutting down the machine.
 
-## ✨ Features
+In other words: your workstation gets a little Home Assistant nervous system.
 
-- Detects system-level states (e.g., webcam usage, VPN active)
-- Updates `input_boolean`, `input_text` or `sensor` entities in Home Assistant
-- Flexible monitor + plugin architecture
-- Debounce mechanism to reduce noise
-- Local API to trigger plugins
-- API key protection for local API
-- Optionally works as a Windows Service
-- Unit tested and extensible
+## Features
 
----
+- Detect webcam usage and publish it to Home Assistant
+- Detect VPN connectivity and publish it to Home Assistant
+- Update Home Assistant helpers through the REST API
+- Supports `input_boolean`, `input_text`, and `input_number`
+- Debounces repeated state updates to reduce noise
+- Local API for Home Assistant triggered plugins
+- API key protection for the local API
+- Runs as a normal app during development
+- Runs as a Windows service in production
+- Unit tested
+- Small monitor and plugin architecture
 
-## 🚀 Quick Start
+## Requirements
 
-### 1. Clone the Repo
+- Windows
+- .NET 10 SDK for development
+- .NET 10 runtime for deployment
+- Home Assistant with a long-lived access token
+- Optional: configured Home Assistant helpers such as `input_boolean`
+
+## Quick start
+
+### 1. Clone the repository
 
 ```bash
 git clone https://github.com/Rmkrs/HomeAssistantLink.git
@@ -33,16 +44,16 @@ cd HomeAssistantLink
 
 ### 2. Configure `.env`
 
-Create a `.env` file at the root:
-
-# Replace 'machinename' with your actual device identifier
+Create a `.env` file in the repository root.
 
 ```env
 HomeAssistantLink__HomeAssistant__Host=http://homeassistant.local:8123
-HomeAssistantLink__HomeAssistant__ApiKey=your_long_lived_token
+HomeAssistantLink__HomeAssistant__ApiKey=your_home_assistant_long_lived_access_token
 
 HomeAssistantLink__Monitors__WebCamMonitor__EntityId=input_boolean.machinename_webcam
+
 HomeAssistantLink__Monitors__VpnMonitor__EntityId=input_boolean.machinename_vpn
+HomeAssistantLink__Monitors__VpnMonitor__NetworkInterfaceDescription=Your VPN Network Adapter Description
 
 HomeAssistantLink__Plugins__ShutdownPlugin__Command=shutdown
 HomeAssistantLink__Plugins__ShutdownPlugin__EntityId=machinename
@@ -50,64 +61,27 @@ HomeAssistantLink__Plugins__ShutdownPlugin__EntityId=machinename
 HomeAssistantLink__ApiKey=your_local_api_key
 ```
 
-You can also configure these settings in `appsettings.json`.
+Replace `machinename` with the identifier you want to use for this machine.
 
-### 3. Run the App
+The Home Assistant token is used by HomeAssistantLink when it calls Home Assistant.
+
+The local API key is used by Home Assistant when it calls HomeAssistantLink.
+
+You can also configure the same settings in `appsettings.json`.
+
+### 3. Run the app
 
 ```bash
 dotnet run --project Source/HomeAssistantLink.Host.WebApi
 ```
 
-To install as a Windows Service:
+In development, Swagger UI is available and can be used to call the local API.
 
-```bash
-sc create "HomeAssistantLink Service" binPath="C:\Path\To\Published\App.exe"
-```
+## Home Assistant setup
 
----
+Create helpers for the values you want HomeAssistantLink to update.
 
-## 🧰 Concepts
-
-### Monitors
-
-A monitor detects a system state (e.g., camera usage, VPN connection). When its state changes, it updates an entity in Home Assistant.
-
-Example:
-
-```csharp
-public class WebCamMonitor : IMonitorBool
-{
-    public string EntityId => "input_boolean.machinename_webcam";
-    public bool Value => /* logic */;
-    public void Start(Action onChange) => /* ... */;
-    public void Stop() => /* ... */;
-}
-```
-
-### Plugins
-
-A plugin reacts to changes from Home Assistant (e.g., shutdown command).
-
-Example:
-
-```csharp
-public class ShutDownPlugin : IPlugin
-{
-    public void Execute(string entityId, string state)
-    {
-        if (entityId == "machinename" && state == "shutdown")
-        {
-            /* shutdown logic */
-        }
-    }
-}
-```
-
----
-
-## 📡 Home Assistant Setup
-
-Add these to your `configuration.yaml`:
+Example `configuration.yaml`:
 
 ```yaml
 input_boolean:
@@ -120,7 +94,7 @@ input_boolean:
 Example automation:
 
 ```yaml
-alias: Turn KeyLight off when Webcam turns off
+alias: Turn key light off when webcam turns off
 trigger:
   - platform: state
     entity_id: input_boolean.machinename_webcam
@@ -132,44 +106,193 @@ action:
       entity_id: light.right
 ```
 
----
+## Local API
 
-## 🔐 API Protection
+HomeAssistantLink exposes a local API under:
 
-All calls to `/api` require an API key. Add it to your `.env`:
-
-```env
-HomeAssistantLink__ApiKey=your_local_api_key
+```text
+/api
 ```
 
-Swagger UI (in development) will prompt for this key.
+The API is protected by an API key. Requests must include:
 
----
+```http
+X-Api-Key: your_local_api_key
+```
 
-## 📆 Structure
+The local API can be used by Home Assistant automations to trigger plugins.
 
-- `Domain`: Monitor and plugin interfaces and core orchestration
-- `Infrastructure`: Debounce and platform helpers
-- `Clients`: HTTP client for Home Assistant
-- `Host.WebApi`: Windows service host with local API
-- `Monitors.*`: Webcam and VPN monitors
-- `Plugins.*`: Example shutdown plugin
+Example payload:
 
----
+```json
+{
+  "entityId": "machinename",
+  "state": "shutdown"
+}
+```
 
-## ✅ Testing
+The shutdown plugin checks the configured entity id and command before invoking the shutdown action.
 
-All non-integration logic is covered by unit tests.
+## Running as a Windows service
 
-Run tests:
+Publish the app first:
+
+```bash
+dotnet publish Source/HomeAssistantLink.Host.WebApi -c Release -o C:\Services\HomeAssistantLink
+```
+
+Create the Windows service:
+
+```bash
+sc create "HomeAssistantLink Service" binPath="C:\Services\HomeAssistantLink\HomeAssistantLink.Host.WebApi.exe"
+```
+
+Start it:
+
+```bash
+sc start "HomeAssistantLink Service"
+```
+
+Stop it:
+
+```bash
+sc stop "HomeAssistantLink Service"
+```
+
+Delete it:
+
+```bash
+sc delete "HomeAssistantLink Service"
+```
+
+## Concepts
+
+### Monitors
+
+A monitor watches local machine state and publishes `EntityStateUpdate` values.
+
+Current monitors include:
+
+- `WebCamMonitor`
+- `VpnMonitor`
+
+Monitors implement `IMonitor`:
+
+```csharp
+public interface IMonitor
+{
+    string Name { get; }
+
+    Task StartAsync(
+        Func<EntityStateUpdate, CancellationToken, Task> publish,
+        CancellationToken cancellationToken);
+
+    Task StopAsync(CancellationToken cancellationToken);
+}
+```
+
+A monitor decides when something changed. The domain layer decides whether the update should be sent to Home Assistant.
+
+### Entity updates
+
+State changes are represented by `EntityStateUpdate`:
+
+```csharp
+public sealed record EntityStateUpdate(
+    string EntityId,
+    HomeAssistantEntityType EntityType,
+    object? Value);
+```
+
+Supported entity types:
+
+```csharp
+public enum HomeAssistantEntityType
+{
+    Boolean,
+    Text,
+    Number,
+    DateTime,
+}
+```
+
+The Home Assistant REST client maps those types to service calls:
+
+- `Boolean` -> `input_boolean.turn_on` / `input_boolean.turn_off`
+- `Text` -> `input_text.set_value`
+- `Number` -> `input_number.set_value`
+- `DateTime` -> `input_text.set_value`
+
+### Debounce
+
+`Debounce` prevents repeated identical updates from being sent too quickly.
+
+This keeps Home Assistant updates calm and avoids noisy flapping when Windows emits multiple system events for the same effective state.
+
+### Plugins
+
+A plugin reacts to calls from Home Assistant through the local API.
+
+Plugins implement `IPlugin`:
+
+```csharp
+public interface IPlugin
+{
+    void Execute(string entityId, string state);
+}
+```
+
+The included shutdown plugin checks the configured entity id and command before invoking shutdown behavior.
+
+## Project structure
+
+```text
+Source/
+  HomeAssistantLink.Clients/
+  HomeAssistantLink.Domain/
+  HomeAssistantLink.Host.WebApi/
+  HomeAssistantLink.Infrastructure/
+  HomeAssistantLink.Monitors.Vpn/
+  HomeAssistantLink.Monitors.WebCam/
+  HomeAssistantLink.Plugins.ShutDownComputer/
+
+Tests/
+  Unit/
+    HomeAssistantLink.DomainUnitTests/
+    HomeAssistantLink.InfrastructureUnitTests/
+    HomeAssistantLink.Plugins.ShutDownComputerUnitTests/
+```
+
+### Source projects
+
+- `HomeAssistantLink.Domain`: contracts and orchestration
+- `HomeAssistantLink.Infrastructure`: debounce and platform-independent infrastructure
+- `HomeAssistantLink.Clients`: Home Assistant REST API client
+- `HomeAssistantLink.Host.WebApi`: service host and local API
+- `HomeAssistantLink.Monitors.*`: local state monitors
+- `HomeAssistantLink.Plugins.*`: local actions triggered from Home Assistant
+
+## Testing
+
+Run all tests:
 
 ```bash
 dotnet test
 ```
 
----
+The test suite uses:
 
-## 📜 License
+- NUnit
+- Shouldly
+- Moq
+- Library.UnitTesting
+
+## Development notes
+
+HomeAssistantLink intentionally avoids heavy Home Assistant client dependencies. The app only needs a small part of the Home Assistant REST API, so it uses `HttpClient` directly.
+
+This keeps the dependency graph small, avoids stale transitive packages, and makes the actual Home Assistant calls easy to inspect.
+
+## License
 
 MIT
-

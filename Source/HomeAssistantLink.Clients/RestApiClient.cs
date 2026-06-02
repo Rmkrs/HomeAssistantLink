@@ -1,49 +1,127 @@
 ﻿namespace HomeAssistantLink.Clients;
 
 using System.Globalization;
-using HADotNet.Core;
-using HADotNet.Core.Clients;
+using System.Net.Http.Headers;
+using System.Net.Http.Json;
+
 using HomeAssistantLink.Clients.Contracts;
 using HomeAssistantLink.Domain.Contracts;
+
 using Microsoft.Extensions.Options;
 
 public class RestApiClient : ISetEntityState
 {
-    private readonly ServiceClient serviceClient;
+    private readonly HttpClient httpClient;
 
-    public RestApiClient(IOptions<RestApiClientSettings> settings)
+    public RestApiClient(
+        HttpClient httpClient,
+        IOptions<RestApiClientSettings> settings)
     {
-        ClientFactory.Initialize(settings.Value.Host, settings.Value.ApiKey);
-        this.serviceClient = ClientFactory.GetClient<ServiceClient>();
+        ArgumentNullException.ThrowIfNull(httpClient);
+        ArgumentNullException.ThrowIfNull(settings);
+
+        var restApiClientSettings = settings.Value ?? throw new ArgumentNullException(nameof(settings));
+
+        if (string.IsNullOrWhiteSpace(restApiClientSettings.Host))
+        {
+            throw new ArgumentException("Home Assistant host is required.", nameof(settings));
+        }
+
+        if (string.IsNullOrWhiteSpace(restApiClientSettings.ApiKey))
+        {
+            throw new ArgumentException("Home Assistant API key is required.", nameof(settings));
+        }
+
+        this.httpClient = httpClient;
+        this.httpClient.BaseAddress = new Uri(NormalizeBaseAddress(restApiClientSettings.Host), UriKind.Absolute);
+        this.httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", restApiClientSettings.ApiKey);
     }
 
-    public void SetBool(string entityId, bool value)
+    public Task SetAsync(EntityStateUpdate update, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(update);
+
+        return update.EntityType switch
+        {
+            HomeAssistantEntityType.Boolean => this.SetBoolAsync(update, cancellationToken),
+            HomeAssistantEntityType.Text => this.SetStringAsync(update, cancellationToken),
+            HomeAssistantEntityType.Number => this.SetNumberAsync(update, cancellationToken),
+            HomeAssistantEntityType.DateTime => this.SetDateTimeAsync(update, cancellationToken),
+            _ => throw new NotSupportedException($"Unsupported Home Assistant entity type '{update.EntityType}'."),
+        };
+    }
+
+    private static string NormalizeBaseAddress(string value)
+    {
+        var trimmedValue = value.TrimEnd('/');
+
+        if (trimmedValue.EndsWith("/api", StringComparison.OrdinalIgnoreCase))
+        {
+            trimmedValue = trimmedValue[..^4];
+        }
+
+        return $"{trimmedValue}/";
+    }
+
+    private Task SetBoolAsync(EntityStateUpdate update, CancellationToken cancellationToken)
+    {
+        var value = Convert.ToBoolean(update.Value, CultureInfo.InvariantCulture);
         var service = value ? "turn_on" : "turn_off";
-        this.CallService("input_boolean", service, new { entity_id = entityId });
+
+        return this.CallServiceAsync("input_boolean", service, new { entity_id = update.EntityId }, cancellationToken);
     }
 
-    public void SetString(string entityId, string value)
+    private Task SetStringAsync(EntityStateUpdate update, CancellationToken cancellationToken)
     {
-        this.CallService("input_text", "set_value", new { entity_id = entityId, value });
+        var value = Convert.ToString(update.Value, CultureInfo.InvariantCulture) ?? string.Empty;
+
+        return this.CallServiceAsync("input_text", "set_value", new
+        {
+            entity_id = update.EntityId,
+            value,
+        }, cancellationToken);
     }
 
-    public void SetNumber(string entityId, double value)
+    private Task SetNumberAsync(EntityStateUpdate update, CancellationToken cancellationToken)
     {
-        this.CallService("input_number", "set_value", new { entity_id = entityId, value });
+        var value = Convert.ToDouble(update.Value, CultureInfo.InvariantCulture);
+
+        return this.CallServiceAsync("input_number", "set_value", new
+        {
+            entity_id = update.EntityId,
+            value,
+        }, cancellationToken);
     }
 
-    public void SetDate(string entityId, DateTime value)
+    private Task SetDateTimeAsync(EntityStateUpdate update, CancellationToken cancellationToken)
     {
-        var iso = value.ToString("o", CultureInfo.InvariantCulture);
-        this.CallService("input_text", "set_value", new { entity_id = entityId, value = iso });
+        var value = update.Value switch
+        {
+            DateTime dateTime => dateTime.ToString("o", CultureInfo.InvariantCulture),
+            DateTimeOffset dateTimeOffset => dateTimeOffset.ToString("o", CultureInfo.InvariantCulture),
+            null => string.Empty,
+            _ => Convert.ToString(update.Value, CultureInfo.InvariantCulture) ?? string.Empty,
+        };
+
+        return this.CallServiceAsync("input_text", "set_value", new
+        {
+            entity_id = update.EntityId,
+            value,
+        }, cancellationToken);
     }
 
-    private void CallService(string domain, string service, object data)
+    private async Task CallServiceAsync(
+        string domain,
+        string service,
+        object data,
+        CancellationToken cancellationToken)
     {
-        this.serviceClient.CallService(domain, service, data)
-            .ConfigureAwait(false)
-            .GetAwaiter()
-            .GetResult();
+        var requestUri = new Uri($"api/services/{domain}/{service}", UriKind.Relative);
+
+        using var response = await this.httpClient
+            .PostAsJsonAsync(requestUri, data, cancellationToken)
+            .ConfigureAwait(false);
+
+        response.EnsureSuccessStatusCode();
     }
 }

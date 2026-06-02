@@ -4,5 +4,5 @@ public interface INetworkAdapterChangeMonitor
 {
     void Start(Action action);
 
-    void Stop();
+    void StopMonitoring();
 }

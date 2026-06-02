@@ -4,5 +4,5 @@ public interface IWebCamRegistryMonitor
 {
     void Start(Action action);
 
-    void Stop();
+    void StopMonitoring();
 }

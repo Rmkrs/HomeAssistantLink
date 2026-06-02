@@ -6,11 +6,15 @@ public class Worker(IMonitorHandler handler) : BackgroundService
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        while (!stoppingToken.IsCancellationRequested)
+        await handler.StartAsync(stoppingToken);
+
+        try
         {
-            handler.Start();
             await Task.Delay(Timeout.Infinite, stoppingToken);
-            handler.Stop();
+        }
+        finally
+        {
+            await handler.StopAsync(CancellationToken.None);
         }
     }
 }

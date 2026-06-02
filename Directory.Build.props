@@ -1,6 +1,13 @@
 <Project>
-  <!-- StyleCop Analyzers configuration -->
+  <PropertyGroup>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <AnalysisMode>Recommended</AnalysisMode>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591</NoWarn>
+  </PropertyGroup>
+
   <ItemGroup>
-    <PackageReference Include="StyleCop.Analyzers.Unstable" Version="1.2.0.556" PrivateAssets="all" />
- </ItemGroup>
+    <PackageReference Include="Meziantou.Analyzer" Version="3.0.98" PrivateAssets="all" />
+  </ItemGroup>
 </Project>

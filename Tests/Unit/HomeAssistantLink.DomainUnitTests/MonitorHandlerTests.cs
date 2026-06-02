@@ -11,247 +11,98 @@ public class MonitorHandlerTests : UnitTestBase<MonitorHandler>
 {
     private readonly Mock<ISetEntityState> setEntityStateMock = new();
     private readonly Mock<IDebounce> debounceMock = new();
-    private readonly Mock<IMonitorBool> boolMonitorMock = new();
-    private readonly Mock<IMonitorDateTime> dateMonitorMock = new();
-    private readonly Mock<IMonitorDouble> doubleMonitorMock = new();
-    private readonly Mock<IMonitorString> stringMonitorMock = new();
+    private readonly Mock<IMonitor> monitorMock = new();
 
     [Test]
-    public void Start_Valid_StartsBoolMonitor()
+    public async Task StartAsync_Valid_StartsMonitor()
     {
         // Arrange
         var target = this.GetTarget();
 
         // Act
-        target.Start();
+        await target.StartAsync(CancellationToken.None);
 
         // Assert
-        this.boolMonitorMock.Verify(m => m.Start(It.IsAny<Action>()), Times.Once, "Bool monitor should be started once.");
+        this.monitorMock.Verify(
+            m => m.StartAsync(
+                It.IsAny<Func<EntityStateUpdate, CancellationToken, Task>>(),
+                CancellationToken.None),
+            Times.Once,
+            "Monitor should be started once.");
     }
 
     [Test]
-    public void Start_Valid_StartsDateMonitor()
+    public async Task StopAsync_Valid_StopsMonitor()
     {
         // Arrange
         var target = this.GetTarget();
 
         // Act
-        target.Start();
+        await target.StopAsync(CancellationToken.None);
 
         // Assert
-        this.dateMonitorMock.Verify(m => m.Start(It.IsAny<Action>()), Times.Once, "Date monitor should be started once.");
-    }
-
-    [Test]
-    public void Start_Valid_StartsDoubleMonitor()
-    {
-        // Arrange
-        var target = this.GetTarget();
-
-        // Act
-        target.Start();
-
-        // Assert
-        this.doubleMonitorMock.Verify(m => m.Start(It.IsAny<Action>()), Times.Once, "Double monitor should be started once.");
-    }
-
-    [Test]
-    public void Start_Valid_StartsStringMonitor()
-    {
-        // Arrange
-        var target = this.GetTarget();
-
-        // Act
-        target.Start();
-
-        // Assert
-        this.stringMonitorMock.Verify(m => m.Start(It.IsAny<Action>()), Times.Once, "String monitor should be started once.");
-    }
-
-    [Test]
-    public void Stop_Valid_StopsBoolMonitor()
-    {
-        // Arrange
-        var target = this.GetTarget();
-
-        // Act
-        target.Stop();
-
-        // Assert
-        this.boolMonitorMock.Verify(m => m.Stop(), Times.Once, "Bool monitor should be stopped once.");
-    }
-
-    [Test]
-    public void Stop_Valid_StopsDateMonitor()
-    {
-        // Arrange
-        var target = this.GetTarget();
-
-        // Act
-        target.Stop();
-
-        // Assert
-        this.dateMonitorMock.Verify(m => m.Stop(), Times.Once, "Date monitor should be stopped once.");
-    }
-
-    [Test]
-    public void Stop_Valid_StopsDoubleMonitor()
-    {
-        // Arrange
-        var target = this.GetTarget();
-
-        // Act
-        target.Stop();
-
-        // Assert
-        this.doubleMonitorMock.Verify(m => m.Stop(), Times.Once, "Double monitor should be stopped once.");
-    }
-
-    [Test]
-    public void Stop_Valid_StopsStringMonitor()
-    {
-        // Arrange
-        var target = this.GetTarget();
-
-        // Act
-        target.Stop();
-
-        // Assert
-        this.stringMonitorMock.Verify(m => m.Stop(), Times.Once, "String monitor should be stopped once.");
+        this.monitorMock.Verify(
+            m => m.StopAsync(CancellationToken.None),
+            Times.Once,
+            "Monitor should be stopped once.");
     }
 
     [Test]
     [TestCase(false)]
     [TestCase(true)]
-    public void BoolMonitorChange_Valid_SetsBoolWhenApplicable(bool isApplicable)
+    public async Task MonitorChange_Valid_SetsEntityStateWhenApplicable(bool isApplicable)
     {
         // Arrange
-        var entityId = this.Instantiator.Random<string>();
-        var value = this.Instantiator.Random<bool>();
-        this.boolMonitorMock.Setup(m => m.EntityId).Returns(entityId);
-        this.boolMonitorMock.Setup(m => m.Value).Returns(value);
-        this.debounceMock.Setup(d => d.ShouldProcess(entityId, value)).Returns(isApplicable);
+        var update = new EntityStateUpdate(
+            this.Instantiator.Random<string>(),
+            HomeAssistantEntityType.Text,
+            this.Instantiator.Random<string>());
 
-        Action? capturedAction = null;
+        this.debounceMock
+            .Setup(d => d.ShouldProcess(update))
+            .Returns(isApplicable);
 
-        this.boolMonitorMock
-            .Setup(m => m.Start(It.IsAny<Action>()))
-            .Callback<Action>(a => capturedAction = a);
+        Func<EntityStateUpdate, CancellationToken, Task>? capturedPublish = null;
+
+        this.monitorMock
+            .Setup(m => m.StartAsync(
+                It.IsAny<Func<EntityStateUpdate, CancellationToken, Task>>(),
+                It.IsAny<CancellationToken>()))
+            .Callback<Func<EntityStateUpdate, CancellationToken, Task>, CancellationToken>((publish, _) => capturedPublish = publish)
+            .Returns(Task.CompletedTask);
+
+        this.setEntityStateMock
+            .Setup(m => m.SetAsync(update, It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
 
         var target = this.GetTarget();
-        target.Start();
+        await target.StartAsync(CancellationToken.None);
 
         // Act
-        capturedAction?.Invoke();
+        await capturedPublish!(update, CancellationToken.None);
 
         // Assert
         this.setEntityStateMock.Verify(
-            m => m.SetBool(entityId, value),
+            m => m.SetAsync(update, CancellationToken.None),
             isApplicable ? Times.Once : Times.Never,
-            "SetEntityState should be called with the correct parameters when applicable.");
-    }
-
-    [Test]
-    [TestCase(false)]
-    [TestCase(true)]
-    public void DateMonitorChange_Valid_SetsDateWhenApplicable(bool isApplicable)
-    {
-        // Arrange
-        var entityId = this.Instantiator.Random<string>();
-        var value = this.Instantiator.Random<DateTime>();
-        this.dateMonitorMock.Setup(m => m.EntityId).Returns(entityId);
-        this.dateMonitorMock.Setup(m => m.Value).Returns(value);
-        this.debounceMock.Setup(d => d.ShouldProcess(entityId, value)).Returns(isApplicable);
-
-        Action? capturedAction = null;
-
-        this.dateMonitorMock
-            .Setup(m => m.Start(It.IsAny<Action>()))
-            .Callback<Action>(a => capturedAction = a);
-
-        var target = this.GetTarget();
-        target.Start();
-
-        // Act
-        capturedAction?.Invoke();
-
-        // Assert
-        this.setEntityStateMock.Verify(
-            m => m.SetDate(entityId, value),
-            isApplicable ? Times.Once : Times.Never,
-            "SetEntityState should be called with the correct parameters when applicable.");
-    }
-
-    [Test]
-    [TestCase(false)]
-    [TestCase(true)]
-    public void DoubleMonitorChange_Valid_SetsNumberWhenApplicable(bool isApplicable)
-    {
-        // Arrange
-        var entityId = this.Instantiator.Random<string>();
-        var value = this.Instantiator.Random<Double>();
-        this.doubleMonitorMock.Setup(m => m.EntityId).Returns(entityId);
-        this.doubleMonitorMock.Setup(m => m.Value).Returns(value);
-        this.debounceMock.Setup(d => d.ShouldProcess(entityId, value)).Returns(isApplicable);
-
-        Action? capturedAction = null;
-
-        this.doubleMonitorMock
-            .Setup(m => m.Start(It.IsAny<Action>()))
-            .Callback<Action>(a => capturedAction = a);
-
-        var target = this.GetTarget();
-        target.Start();
-
-        // Act
-        capturedAction?.Invoke();
-
-        // Assert
-        this.setEntityStateMock.Verify(
-            m => m.SetNumber(entityId, value),
-            isApplicable ? Times.Once : Times.Never,
-            "SetEntityState should be called with the correct parameters when applicable.");
-    }
-
-    [Test]
-    [TestCase(false)]
-    [TestCase(true)]
-    public void StringMonitorChange_Valid_SetsStringWhenApplicable(bool isApplicable)
-    {
-        // Arrange
-        var entityId = this.Instantiator.Random<string>();
-        var value = this.Instantiator.Random<String>();
-        this.stringMonitorMock.Setup(m => m.EntityId).Returns(entityId);
-        this.stringMonitorMock.Setup(m => m.Value).Returns(value);
-        this.debounceMock.Setup(d => d.ShouldProcess(entityId, value)).Returns(isApplicable);
-
-        Action? capturedAction = null;
-
-        this.stringMonitorMock
-            .Setup(m => m.Start(It.IsAny<Action>()))
-            .Callback<Action>(a => capturedAction = a);
-
-        var target = this.GetTarget();
-        target.Start();
-
-        // Act
-        capturedAction?.Invoke();
-
-        // Assert
-        this.setEntityStateMock.Verify(
-            m => m.SetString(entityId, value),
-            isApplicable ? Times.Once : Times.Never,
-            "SetEntityState should be called with the correct parameters when applicable.");
+            "SetEntityState should be called with the correct update when applicable.");
     }
 
     protected override void Setup()
     {
         this.setEntityStateMock.Reset();
         this.debounceMock.Reset();
-        this.boolMonitorMock.Reset();
-        this.dateMonitorMock.Reset();
-        this.doubleMonitorMock.Reset();
-        this.stringMonitorMock.Reset();
+        this.monitorMock.Reset();
+
+        this.monitorMock
+            .Setup(m => m.StartAsync(
+                It.IsAny<Func<EntityStateUpdate, CancellationToken, Task>>(),
+                It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+
+        this.monitorMock
+            .Setup(m => m.StopAsync(It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
     }
 
     protected override MonitorHandler GetTarget()
@@ -259,9 +110,6 @@ public class MonitorHandlerTests : UnitTestBase<MonitorHandler>
         return new MonitorHandler(
             this.setEntityStateMock.Object,
             this.debounceMock.Object,
-            [this.boolMonitorMock.Object],
-            [this.dateMonitorMock.Object],
-            [this.doubleMonitorMock.Object],
-            [this.stringMonitorMock.Object]);
+            [this.monitorMock.Object]);
     }
 }

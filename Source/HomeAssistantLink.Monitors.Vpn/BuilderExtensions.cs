@@ -10,8 +10,9 @@ public static class BuilderExtensions
     public static IHostApplicationBuilder AddVpnMonitor(this IHostApplicationBuilder builder)
     {
         builder.Services.AddSingleton<INetworkAdapterChangeMonitor, NetworkAdapterChangeMonitor>();
-        builder.Services.AddSingleton<IMonitorBool, VpnMonitor>();
+        builder.Services.AddSingleton<IMonitor, VpnMonitor>();
         builder.Services.Configure<VpnMonitorConfig>(builder.Configuration.GetSection("HomeAssistantLink:Monitors:VpnMonitor"));
+
         return builder;
     }
 }

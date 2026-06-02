@@ -1,4 +1,4 @@
-﻿namespace HomeAssistantLink.DomainUnitTests;
+namespace HomeAssistantLink.DomainUnitTests;
 
 using HomeAssistantLink.Domain;
 using HomeAssistantLink.Domain.Contracts;
@@ -33,8 +33,6 @@ public class PluginHandlerTests : UnitTestBase<PluginHandler>
     protected override void Setup()
     {
         this.pluginMock.Reset();
-
-        this.Options.ShouldMethodArgumentsBeNullGuarded = false;
     }
 
     protected override PluginHandler GetTarget()

@@ -9,10 +9,11 @@ public static class BuilderExtensions
 {
     public static IHostApplicationBuilder AddWebCamMonitor(this IHostApplicationBuilder builder)
     {
-        builder.Services.AddSingleton<IMonitorBool, WebCamMonitor>();
+        builder.Services.AddSingleton<IMonitor, WebCamMonitor>();
         builder.Services.AddSingleton<IWebCamIterator, WebCamIterator>();
         builder.Services.AddSingleton<IWebCamRegistryMonitor, WebCamRegistryMonitor>();
         builder.Services.Configure<WebCamMonitorConfig>(builder.Configuration.GetSection("HomeAssistantLink:Monitors:WebCamMonitor"));
+
         return builder;
     }
 }

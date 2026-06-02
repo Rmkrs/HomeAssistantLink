@@ -2,25 +2,33 @@
 
 using HomeAssistantLink.Domain.Contracts;
 
-public class Debounce(TimeSpan? delay = null) : IDebounce
+public class Debounce(IClock clock, TimeSpan? delay = null) : IDebounce
 {
+    private readonly Lock lockObject = new();
+    private readonly IClock clock = clock ?? throw new ArgumentNullException(nameof(clock));
     private readonly Dictionary<string, object?> lastKnownValues = [];
     private readonly Dictionary<string, DateTime> lastUpdated = [];
     private readonly TimeSpan delay = delay ?? TimeSpan.FromSeconds(1);
 
-    public bool ShouldProcess(string entityId, object? currentValue)
+    public bool ShouldProcess(EntityStateUpdate update)
     {
-        var now = DateTime.UtcNow;
-        var lastValue = this.lastKnownValues.GetValueOrDefault(entityId);
-        var lastTime = this.lastUpdated.GetValueOrDefault(entityId);
+        ArgumentNullException.ThrowIfNull(update);
 
-        if (Equals(currentValue, lastValue) && now - lastTime < this.delay)
+        lock (this.lockObject)
         {
-            return false;
-        }
+            var now = this.clock.UtcNow;
+            var lastValue = this.lastKnownValues.GetValueOrDefault(update.EntityId);
+            var lastTime = this.lastUpdated.GetValueOrDefault(update.EntityId);
 
-        this.lastKnownValues[entityId] = currentValue;
-        this.lastUpdated[entityId] = now;
-        return true;
+            if (object.Equals(update.Value, lastValue) && now - lastTime < this.delay)
+            {
+                return false;
+            }
+
+            this.lastKnownValues[update.EntityId] = update.Value;
+            this.lastUpdated[update.EntityId] = now;
+
+            return true;
+        }
     }
 }

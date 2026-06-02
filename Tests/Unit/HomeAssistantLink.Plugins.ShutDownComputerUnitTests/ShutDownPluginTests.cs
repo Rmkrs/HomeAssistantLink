@@ -1,4 +1,4 @@
-﻿namespace HomeAssistantLink.Plugins.ShutDownComputerUnitTests;
+namespace HomeAssistantLink.Plugins.ShutDownComputerUnitTests;
 
 using HomeAssistantLink.Plugins.ShutDownComputer;
 using HomeAssistantLink.Plugins.ShutDownComputer.Contracts;
@@ -20,7 +20,7 @@ public class ShutDownPluginTests : UnitTestBase<ShutDownPlugin>
         // Arrange
         var entityId = this.Instantiator.Random<String>();
         var state = this.Instantiator.Random<String>();
-        
+
         this.shutdownPluginConfig.EntityId = entityId;
         this.shutdownPluginConfig.Command = state;
 
@@ -79,8 +79,6 @@ public class ShutDownPluginTests : UnitTestBase<ShutDownPlugin>
         this.shutdownPluginConfig.EntityId = this.Instantiator.Random<string>();
         this.shutdownPluginConfig.Command = this.Instantiator.Random<string>();
         this.optionsMock.Setup(o => o.Value).Returns(this.shutdownPluginConfig);
-
-        this.Options.ShouldMethodArgumentsBeNullGuarded = false;
     }
 
     protected override ShutDownPlugin GetTarget()

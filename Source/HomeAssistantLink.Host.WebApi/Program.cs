@@ -1,4 +1,5 @@
 using dotenv.net;
+
 using HomeAssistantLink.Clients;
 using HomeAssistantLink.Domain;
 using HomeAssistantLink.Domain.Contracts;
@@ -8,14 +9,20 @@ using HomeAssistantLink.Infrastructure;
 using HomeAssistantLink.Monitors.Vpn;
 using HomeAssistantLink.Monitors.WebCam;
 using HomeAssistantLink.Plugins.ShutDownComputer;
+
 using Microsoft.AspNetCore.Mvc;
 
 DotEnv.Fluent().WithProbeForEnv(int.MaxValue).Load();
-var builder = WebApplication.CreateSlimBuilder(args);
+
+var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerWithApiKey();
-builder.Host.UseWindowsService(options => { options.ServiceName = "HomeAssistantLink Service"; });
+builder.Host.UseWindowsService(options =>
+{
+    options.ServiceName = "HomeAssistantLink Service";
+});
+
 builder.Services.AddWindowsService();
 
 builder.Services.ConfigureHttpJsonOptions(options =>
@@ -46,9 +53,10 @@ if (app.Environment.IsDevelopment())
 app.UseMiddleware<ApiKeyMiddleware>();
 
 var api = app.MapGroup("/api");
+
 api.MapPost(
     "/",
-    ([FromBody]StateModel request, IPluginHandler handler) =>
+    ([FromBody] StateModel request, IPluginHandler handler) =>
     {
         handler.Handle(request.EntityId, request.State);
     });

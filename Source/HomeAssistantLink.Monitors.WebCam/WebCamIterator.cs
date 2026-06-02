@@ -1,13 +1,18 @@
 ﻿namespace HomeAssistantLink.Monitors.WebCam;
 
 using HomeAssistantLink.Monitors.WebCam.Contracts;
+
 using Microsoft.Win32;
 
 public class WebCamIterator : IWebCamIterator
 {
+    private const string NonPackagedKeyName = "NonPackaged";
+
     public IEnumerable<WebCamInfo> Iterate()
     {
-        var webCamRoot = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\webcam");
+        using var webCamRoot = Registry.CurrentUser.OpenSubKey(
+            @"SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\webcam");
+
         return webCamRoot == null ? [] : GetItems(webCamRoot);
     }
 
@@ -18,22 +23,16 @@ public class WebCamIterator : IWebCamIterator
         var items = webCamRoot.GetSubKeyNames();
         foreach (var item in items)
         {
-            if (item == "NonPackaged")
-            {
-                var nonPackagedRoot = webCamRoot.OpenSubKey(item);
-                if (nonPackagedRoot == null)
-                {
-                    continue;
-                }
-
-                result.AddRange(GetItems(nonPackagedRoot));
-                continue;
-            }
-
-            var subKey = webCamRoot.OpenSubKey(item);
+            using var subKey = webCamRoot.OpenSubKey(item);
 
             if (subKey == null)
             {
+                continue;
+            }
+
+            if (string.Equals(item, NonPackagedKeyName, StringComparison.Ordinal))
+            {
+                result.AddRange(GetItems(subKey));
                 continue;
             }
 
@@ -47,8 +46,16 @@ public class WebCamIterator : IWebCamIterator
             var stop = subKey.GetValue("LastUsedTimeStop");
 
             var lastUsedTimeStart = DateTime.FromFileTime((long)start);
-            var lastUsedTimeStop = stop == null || (long)stop == 0 ? default(DateTime?) : DateTime.FromFileTime((long)stop);
-            result.Add(new WebCamInfo { By = item, LastUsedTimeStart = lastUsedTimeStart, LastUsedTimeStop = lastUsedTimeStop });
+            var lastUsedTimeStop = stop == null || (long)stop == 0
+                ? default(DateTime?)
+                : DateTime.FromFileTime((long)stop);
+
+            result.Add(new WebCamInfo
+            {
+                By = item,
+                LastUsedTimeStart = lastUsedTimeStart,
+                LastUsedTimeStop = lastUsedTimeStop,
+            });
         }
 
         return result;

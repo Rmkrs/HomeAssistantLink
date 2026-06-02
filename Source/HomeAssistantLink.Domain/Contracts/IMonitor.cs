@@ -2,9 +2,9 @@
 
 public interface IMonitor
 {
-    string EntityId { get; }
+    string Name { get; }
 
-    void Start(Action action);
+    Task StartAsync(Func<EntityStateUpdate, CancellationToken, Task> publish, CancellationToken cancellationToken);
 
-    void Stop();
+    Task StopAsync(CancellationToken cancellationToken);
 }

@@ -2,5 +2,5 @@
 
 public interface IDebounce
 {
-    bool ShouldProcess(string entityId, object? currentValue);
+    bool ShouldProcess(EntityStateUpdate update);
 }
