@@ -6,6 +6,7 @@ using HomeAssistantLink.Domain.Contracts;
 using HomeAssistantLink.Host.WebApi;
 using HomeAssistantLink.Host.WebApi.Models;
 using HomeAssistantLink.Infrastructure;
+using HomeAssistantLink.Monitors.TcpPort;
 using HomeAssistantLink.Monitors.Vpn;
 using HomeAssistantLink.Monitors.WebCam;
 using HomeAssistantLink.Plugins.ShutDownComputer;
@@ -39,6 +40,7 @@ builder
     .AddClients()
     .AddWebCamMonitor()
     .AddVpnMonitor()
+    .AddTcpPortMonitor()
     .AddShutdownComputer();
 
 var app = builder.Build();

@@ -19,6 +19,7 @@
     <ProjectReference Include="..\HomeAssistantLink.Clients\HomeAssistantLink.Clients.csproj" />
     <ProjectReference Include="..\HomeAssistantLink.Domain\HomeAssistantLink.Domain.csproj" />
     <ProjectReference Include="..\HomeAssistantLink.Infrastructure\HomeAssistantLink.Infrastructure.csproj" />
+    <ProjectReference Include="..\HomeAssistantLink.Monitors.TcpPort\HomeAssistantLink.Monitors.TcpPort.csproj" />
     <ProjectReference Include="..\HomeAssistantLink.Monitors.Vpn\HomeAssistantLink.Monitors.Vpn.csproj" />
     <ProjectReference Include="..\HomeAssistantLink.Monitors.WebCam\HomeAssistantLink.Monitors.WebCam.csproj" />
     <ProjectReference Include="..\HomeAssistantLink.Plugins.ShutDownComputer\HomeAssistantLink.Plugins.ShutDownComputer.csproj" />

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.9.34728.123
+# Visual Studio Version 18
+VisualStudioVersion = 18.5.11801.241 oobstable
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Source", "Source", "{F49760DC-A875-4E40-AC58-6B73DE3F6237}"
 EndProject
@@ -35,6 +35,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeAssistantLink.Plugins.ShutDownComputerUnitTests", "Tests\Unit\HomeAssistantLink.Plugins.ShutDownComputerUnitTests\HomeAssistantLink.Plugins.ShutDownComputerUnitTests.csproj", "{8990F5A6-C383-4F2D-89DE-F3D5689DD597}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeAssistantLink.InfrastructureUnitTests", "Tests\Unit\HomeAssistantLink.InfrastructureUnitTests\HomeAssistantLink.InfrastructureUnitTests.csproj", "{A7E991B2-3713-46E3-8FF5-8361FA07989E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeAssistantLink.Monitors.TcpPort", "Source\HomeAssistantLink.Monitors.TcpPort\HomeAssistantLink.Monitors.TcpPort.csproj", "{22ED7B0C-C5AD-4B2A-B295-2081FAE2610D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -82,6 +84,10 @@ Global
 		{A7E991B2-3713-46E3-8FF5-8361FA07989E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A7E991B2-3713-46E3-8FF5-8361FA07989E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A7E991B2-3713-46E3-8FF5-8361FA07989E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{22ED7B0C-C5AD-4B2A-B295-2081FAE2610D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{22ED7B0C-C5AD-4B2A-B295-2081FAE2610D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{22ED7B0C-C5AD-4B2A-B295-2081FAE2610D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{22ED7B0C-C5AD-4B2A-B295-2081FAE2610D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -99,6 +105,7 @@ Global
 		{03A7195B-7B1B-4BDE-838B-18BCFF5EB263} = {AA9256F8-A164-4977-9B68-2768ADF4BDCD}
 		{8990F5A6-C383-4F2D-89DE-F3D5689DD597} = {AA9256F8-A164-4977-9B68-2768ADF4BDCD}
 		{A7E991B2-3713-46E3-8FF5-8361FA07989E} = {AA9256F8-A164-4977-9B68-2768ADF4BDCD}
+		{22ED7B0C-C5AD-4B2A-B295-2081FAE2610D} = {F49760DC-A875-4E40-AC58-6B73DE3F6237}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A150A066-7A7C-40FA-9A47-83D1D0698A33}
