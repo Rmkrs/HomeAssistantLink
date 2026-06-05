@@ -14,6 +14,8 @@ public sealed class TcpPortMonitor(
     IOptions<TcpPortMonitorConfig> options,
     ILogger<TcpPortMonitor> logger) : IMonitor
 {
+    private static readonly TimeSpan stateRepublishInterval = TimeSpan.FromMinutes(5);
+
     private static readonly Action<ILogger, string, string, int, Exception?> probeFailed =
         LoggerMessage.Define<string, string, int>(
             LogLevel.Debug,
@@ -31,7 +33,9 @@ public sealed class TcpPortMonitor(
         : options.Value ?? throw new ArgumentNullException(nameof(options));
 
     private readonly ILogger<TcpPortMonitor> logger = logger ?? throw new ArgumentNullException(nameof(logger));
-    private readonly ConcurrentDictionary<string, bool> lastStates = new(StringComparer.OrdinalIgnoreCase);
+
+    private readonly ConcurrentDictionary<string, PublishedState> publishedStates =
+        new(StringComparer.OrdinalIgnoreCase);
 
     private Func<EntityStateUpdate, CancellationToken, Task>? publishFunction;
     private CancellationTokenSource? cancellationTokenSource;
@@ -46,7 +50,11 @@ public sealed class TcpPortMonitor(
         this.publishFunction = publish ?? throw new ArgumentNullException(nameof(publish));
         this.cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
 
-        this.monitorTasks = [.. this.options.Targets.Select(target => this.MonitorTargetAsync(target, this.cancellationTokenSource.Token))];
+        this.monitorTasks =
+        [
+            .. this.options.Targets.Select(target =>
+                this.MonitorTargetAsync(target, this.cancellationTokenSource.Token)),
+        ];
 
         return Task.CompletedTask;
     }
@@ -78,7 +86,7 @@ public sealed class TcpPortMonitor(
         this.cancellationTokenSource = null;
         this.monitorTasks = [];
         this.publishFunction = null;
-        this.lastStates.Clear();
+        this.publishedStates.Clear();
     }
 
     private async Task MonitorTargetAsync(TcpPortTargetConfig target, CancellationToken cancellationToken)
@@ -100,21 +108,42 @@ public sealed class TcpPortMonitor(
     {
         var isAvailable = await this.CheckPortAsync(target, cancellationToken).ConfigureAwait(false);
 
-        if (!forcePublish &&
-            this.lastStates.TryGetValue(target.EntityId, out var previousState) &&
-            previousState == isAvailable)
+        var publishedState = this.publishedStates.GetOrAdd(
+            target.EntityId,
+            _ => new PublishedState());
+
+        var shouldPublish =
+            forcePublish ||
+            publishedState.LastPublishedValue != isAvailable ||
+            this.ShouldRepublish(publishedState);
+
+        if (!shouldPublish)
         {
             return;
         }
-
-        this.lastStates[target.EntityId] = isAvailable;
 
         var update = new EntityStateUpdate(
             target.EntityId,
             HomeAssistantEntityType.Boolean,
             isAvailable);
 
-        await this.PublishAsync(update, cancellationToken).ConfigureAwait(false);
+        var published = await this.PublishAsync(update, cancellationToken).ConfigureAwait(false);
+
+        if (published)
+        {
+            publishedState.LastPublishedValue = isAvailable;
+            publishedState.LastPublishedAt = DateTimeOffset.UtcNow;
+        }
+    }
+
+    private bool ShouldRepublish(PublishedState publishedState)
+    {
+        if (publishedState.LastPublishedValue == null)
+        {
+            return true;
+        }
+
+        return DateTimeOffset.UtcNow - publishedState.LastPublishedAt >= stateRepublishInterval;
     }
 
     private async Task<bool> CheckPortAsync(TcpPortTargetConfig target, CancellationToken cancellationToken)
@@ -149,22 +178,25 @@ public sealed class TcpPortMonitor(
         }
     }
 
-    private async Task PublishAsync(EntityStateUpdate update, CancellationToken cancellationToken)
+    private async Task<bool> PublishAsync(EntityStateUpdate update, CancellationToken cancellationToken)
     {
         var callback = this.publishFunction;
 
         if (callback == null)
         {
-            return;
+            return false;
         }
 
         try
         {
             await callback(update, cancellationToken).ConfigureAwait(false);
+
+            return true;
         }
         catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
         {
             // Expected during shutdown.
+            return false;
         }
         catch (Exception exception)
         {
@@ -173,6 +205,8 @@ public sealed class TcpPortMonitor(
                 this.Name,
                 update.EntityId,
                 exception);
+
+            return false;
         }
     }
 
@@ -222,5 +256,12 @@ public sealed class TcpPortMonitor(
         return string.IsNullOrWhiteSpace(target.Name)
             ? string.Create(CultureInfo.InvariantCulture, $"{target.Host}:{target.Port}")
             : target.Name;
+    }
+
+    private sealed class PublishedState
+    {
+        public bool? LastPublishedValue { get; set; }
+
+        public DateTimeOffset LastPublishedAt { get; set; }
     }
 }
