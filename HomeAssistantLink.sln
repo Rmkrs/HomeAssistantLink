@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.5.11801.241 oobstable
+VisualStudioVersion = 18.5.11801.241
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Source", "Source", "{F49760DC-A875-4E40-AC58-6B73DE3F6237}"
 EndProject
@@ -37,6 +37,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeAssistantLink.InfrastructureUnitTests", "Tests\Unit\HomeAssistantLink.InfrastructureUnitTests\HomeAssistantLink.InfrastructureUnitTests.csproj", "{A7E991B2-3713-46E3-8FF5-8361FA07989E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeAssistantLink.Monitors.TcpPort", "Source\HomeAssistantLink.Monitors.TcpPort\HomeAssistantLink.Monitors.TcpPort.csproj", "{22ED7B0C-C5AD-4B2A-B295-2081FAE2610D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeAssistantLink.Plugins.ScriptRunner", "Source\HomeAssistantLink.Plugins.ScriptRunner\HomeAssistantLink.Plugins.ScriptRunner.csproj", "{9D9EB6A0-8F74-4CA3-94B5-A04D50A62832}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeAssistantLink.UserSession", "Source\HomeAssistantLink.UserSession\HomeAssistantLink.UserSession.csproj", "{C5201FB4-7204-4BB6-8200-3D605D1F9807}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeAssistantLink.Host.TrayApp", "Source\HomeAssistantLink.Host.TrayApp\HomeAssistantLink.Host.TrayApp.csproj", "{095D0F93-0DDD-4477-8AC2-B6037F53CD19}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -88,6 +94,18 @@ Global
 		{22ED7B0C-C5AD-4B2A-B295-2081FAE2610D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{22ED7B0C-C5AD-4B2A-B295-2081FAE2610D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{22ED7B0C-C5AD-4B2A-B295-2081FAE2610D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D9EB6A0-8F74-4CA3-94B5-A04D50A62832}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D9EB6A0-8F74-4CA3-94B5-A04D50A62832}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D9EB6A0-8F74-4CA3-94B5-A04D50A62832}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D9EB6A0-8F74-4CA3-94B5-A04D50A62832}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C5201FB4-7204-4BB6-8200-3D605D1F9807}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C5201FB4-7204-4BB6-8200-3D605D1F9807}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C5201FB4-7204-4BB6-8200-3D605D1F9807}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C5201FB4-7204-4BB6-8200-3D605D1F9807}.Release|Any CPU.Build.0 = Release|Any CPU
+		{095D0F93-0DDD-4477-8AC2-B6037F53CD19}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{095D0F93-0DDD-4477-8AC2-B6037F53CD19}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{095D0F93-0DDD-4477-8AC2-B6037F53CD19}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{095D0F93-0DDD-4477-8AC2-B6037F53CD19}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -106,6 +124,9 @@ Global
 		{8990F5A6-C383-4F2D-89DE-F3D5689DD597} = {AA9256F8-A164-4977-9B68-2768ADF4BDCD}
 		{A7E991B2-3713-46E3-8FF5-8361FA07989E} = {AA9256F8-A164-4977-9B68-2768ADF4BDCD}
 		{22ED7B0C-C5AD-4B2A-B295-2081FAE2610D} = {F49760DC-A875-4E40-AC58-6B73DE3F6237}
+		{9D9EB6A0-8F74-4CA3-94B5-A04D50A62832} = {F49760DC-A875-4E40-AC58-6B73DE3F6237}
+		{C5201FB4-7204-4BB6-8200-3D605D1F9807} = {F49760DC-A875-4E40-AC58-6B73DE3F6237}
+		{095D0F93-0DDD-4477-8AC2-B6037F53CD19} = {F49760DC-A875-4E40-AC58-6B73DE3F6237}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A150A066-7A7C-40FA-9A47-83D1D0698A33}

@@ -9,8 +9,9 @@ using HomeAssistantLink.Infrastructure;
 using HomeAssistantLink.Monitors.TcpPort;
 using HomeAssistantLink.Monitors.Vpn;
 using HomeAssistantLink.Monitors.WebCam;
+using HomeAssistantLink.Plugins.ScriptRunner;
 using HomeAssistantLink.Plugins.ShutDownComputer;
-
+using HomeAssistantLink.UserSession;
 using Microsoft.AspNetCore.Mvc;
 
 DotEnv.Fluent().WithProbeForEnv(int.MaxValue).Load();
@@ -36,12 +37,15 @@ builder.Services.AddHostedService<Worker>();
 
 builder
     .AddDomain()
+    .AddUserSessionClient()
+    .AddServiceSessionServer()
     .AddInfrastructure()
     .AddClients()
     .AddWebCamMonitor()
     .AddVpnMonitor()
     .AddTcpPortMonitor()
-    .AddShutdownComputer();
+    .AddShutdownComputer()
+    .AddScriptRunner();
 
 var app = builder.Build();
 

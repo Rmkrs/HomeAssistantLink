@@ -1,8 +1,8 @@
-﻿namespace HomeAssistantLink.Plugins.ShutDownComputer.Contracts;
+namespace HomeAssistantLink.Plugins.ScriptRunner.Contracts;
 
 using HomeAssistantLink.Domain.Contracts;
 
-public class ShutdownPluginConfig
+public sealed class ScriptRunnerActionConfig
 {
     public PluginRunAs RunAs { get; set; } = PluginRunAs.System;
 
@@ -11,4 +11,8 @@ public class ShutdownPluginConfig
     public string EntityId { get; set; } = string.Empty;
 
     public string Command { get; set; } = string.Empty;
+
+    public string ScriptPath { get; set; } = string.Empty;
+
+    public int TimeoutSeconds { get; set; } = 30;
 }

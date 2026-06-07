@@ -386,6 +386,9 @@ dotnet_diagnostic.MA0004.severity = none
 dotnet_diagnostic.MA0011.severity = warning
 dotnet_diagnostic.CA1305.severity = warning
 
+# MA0016: prefer using collection abstraction
+dotnet_diagnostic.MA0016.severity = none
+
 # MA0075/MA0076: culture-sensitive formatting/interpolation.
 dotnet_diagnostic.MA0075.severity = warning
 dotnet_diagnostic.MA0076.severity = warning

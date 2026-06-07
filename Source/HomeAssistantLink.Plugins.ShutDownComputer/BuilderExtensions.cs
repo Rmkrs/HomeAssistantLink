@@ -1,4 +1,4 @@
-﻿namespace HomeAssistantLink.Plugins.ShutDownComputer;
+namespace HomeAssistantLink.Plugins.ShutDownComputer;
 
 using HomeAssistantLink.Domain.Contracts;
 using HomeAssistantLink.Plugins.ShutDownComputer.Contracts;
