@@ -7,6 +7,7 @@ using HomeAssistantLink.Host.WebApi;
 using HomeAssistantLink.Host.WebApi.Models;
 using HomeAssistantLink.Infrastructure;
 using HomeAssistantLink.Monitors.Display;
+using HomeAssistantLink.Monitors.Process;
 using HomeAssistantLink.Monitors.TcpPort;
 using HomeAssistantLink.Monitors.Vpn;
 using HomeAssistantLink.Monitors.WebCam;
@@ -47,6 +48,7 @@ builder
     .AddVpnMonitor()
     .AddTcpPortMonitor()
     .AddDisplayMonitor()
+    .AddProcessMonitor()
     .AddShutdownComputer()
     .AddScriptRunner();
 
