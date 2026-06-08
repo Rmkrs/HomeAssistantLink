@@ -36,10 +36,10 @@ public class VpnMonitor(
 
     public string NetworkInterfaceDescription => this.options.NetworkInterfaceDescription;
 
-    public Task StartAsync(Func<EntityStateUpdate, CancellationToken, Task> publish, CancellationToken cancellationToken)
+    public Task StartAsync(Func<EntityStateUpdate, CancellationToken, Task> publish, CancellationToken ct)
     {
         this.publish = publish ?? throw new ArgumentNullException(nameof(publish));
-        this.cancellationToken = cancellationToken;
+        this.cancellationToken = ct;
 
         this.monitor.Start(this.NetworkAddressChanged);
         this.CheckNetworkAdapters(forcePublish: true);
@@ -47,7 +47,7 @@ public class VpnMonitor(
         return Task.CompletedTask;
     }
 
-    public Task StopAsync(CancellationToken cancellationToken)
+    public Task StopAsync(CancellationToken ct)
     {
         this.monitor.StopMonitoring();
         this.publish = null;

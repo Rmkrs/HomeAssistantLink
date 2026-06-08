@@ -3,7 +3,6 @@ namespace HomeAssistantLink.UserSession;
 using System.IO.Pipes;
 using System.Text.Json;
 
-using HomeAssistantLink.Domain.Contracts;
 using HomeAssistantLink.UserSession.Contracts;
 
 using Microsoft.Extensions.Logging;

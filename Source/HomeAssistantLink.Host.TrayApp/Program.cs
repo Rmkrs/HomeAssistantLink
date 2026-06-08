@@ -1,4 +1,4 @@
-﻿namespace HomeAssistantLink.Host.TrayApp;
+namespace HomeAssistantLink.Host.TrayApp;
 
 using dotenv.net;
 
@@ -24,7 +24,10 @@ internal static class Program
             .AddInfrastructure()
             .AddScriptRunner()
             .AddUserSessionServer()
-            .AddServiceSessionClient();
+            .AddServiceSessionClient()
+            .AddUserSessionEventClient();
+
+        builder.Services.AddHostedService<DisplaySnapshotPublisher>();
 
         using var host = builder.Build();
 

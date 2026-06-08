@@ -44,6 +44,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeAssistantLink.UserSessi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeAssistantLink.Host.TrayApp", "Source\HomeAssistantLink.Host.TrayApp\HomeAssistantLink.Host.TrayApp.csproj", "{095D0F93-0DDD-4477-8AC2-B6037F53CD19}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeAssistantLink.Monitors.Display", "Source\HomeAssistantLink.Monitors.Display\HomeAssistantLink.Monitors.Display.csproj", "{A22715DA-0B69-4EEC-9A5C-457E56AE162D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -106,6 +108,10 @@ Global
 		{095D0F93-0DDD-4477-8AC2-B6037F53CD19}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{095D0F93-0DDD-4477-8AC2-B6037F53CD19}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{095D0F93-0DDD-4477-8AC2-B6037F53CD19}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A22715DA-0B69-4EEC-9A5C-457E56AE162D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A22715DA-0B69-4EEC-9A5C-457E56AE162D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A22715DA-0B69-4EEC-9A5C-457E56AE162D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A22715DA-0B69-4EEC-9A5C-457E56AE162D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -127,6 +133,7 @@ Global
 		{9D9EB6A0-8F74-4CA3-94B5-A04D50A62832} = {F49760DC-A875-4E40-AC58-6B73DE3F6237}
 		{C5201FB4-7204-4BB6-8200-3D605D1F9807} = {F49760DC-A875-4E40-AC58-6B73DE3F6237}
 		{095D0F93-0DDD-4477-8AC2-B6037F53CD19} = {F49760DC-A875-4E40-AC58-6B73DE3F6237}
+		{A22715DA-0B69-4EEC-9A5C-457E56AE162D} = {F49760DC-A875-4E40-AC58-6B73DE3F6237}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A150A066-7A7C-40FA-9A47-83D1D0698A33}

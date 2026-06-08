@@ -43,12 +43,12 @@ public sealed class TcpPortMonitor(
 
     public string Name => "TcpPort";
 
-    public Task StartAsync(Func<EntityStateUpdate, CancellationToken, Task> publish, CancellationToken cancellationToken)
+    public Task StartAsync(Func<EntityStateUpdate, CancellationToken, Task> publish, CancellationToken ct)
     {
         this.ValidateOptions();
 
         this.publishFunction = publish ?? throw new ArgumentNullException(nameof(publish));
-        this.cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        this.cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(ct);
 
         this.monitorTasks =
         [
@@ -59,7 +59,7 @@ public sealed class TcpPortMonitor(
         return Task.CompletedTask;
     }
 
-    public async Task StopAsync(CancellationToken cancellationToken)
+    public async Task StopAsync(CancellationToken ct)
     {
         var source = this.cancellationTokenSource;
 
@@ -70,9 +70,9 @@ public sealed class TcpPortMonitor(
 
         try
         {
-            await Task.WhenAll(this.monitorTasks).WaitAsync(cancellationToken).ConfigureAwait(false);
+            await Task.WhenAll(this.monitorTasks).WaitAsync(ct).ConfigureAwait(false);
         }
-        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        catch (OperationCanceledException) when (ct.IsCancellationRequested)
         {
             throw;
         }

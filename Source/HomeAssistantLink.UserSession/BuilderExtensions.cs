@@ -1,4 +1,4 @@
-﻿namespace HomeAssistantLink.UserSession;
+namespace HomeAssistantLink.UserSession;
 
 using HomeAssistantLink.Domain.Contracts;
 using HomeAssistantLink.UserSession.Contracts;
@@ -44,6 +44,26 @@ public static class BuilderExtensions
             builder.Configuration.GetSection("HomeAssistantLink:ServiceSession"));
 
         builder.Services.AddHostedService<ServiceSessionCommandServer>();
+
+        return builder;
+    }
+
+    public static IHostApplicationBuilder AddUserSessionEventClient(this IHostApplicationBuilder builder)
+    {
+        builder.Services.Configure<NamedPipeUserSessionEventConfig>(
+            builder.Configuration.GetSection("HomeAssistantLink:UserSessionEvents"));
+
+        builder.Services.AddSingleton<IUserSessionEventClient, NamedPipeUserSessionEventClient>();
+
+        return builder;
+    }
+
+    public static IHostApplicationBuilder AddUserSessionEventServer(this IHostApplicationBuilder builder)
+    {
+        builder.Services.Configure<NamedPipeUserSessionEventConfig>(
+            builder.Configuration.GetSection("HomeAssistantLink:UserSessionEvents"));
+
+        builder.Services.AddHostedService<UserSessionEventServer>();
 
         return builder;
     }

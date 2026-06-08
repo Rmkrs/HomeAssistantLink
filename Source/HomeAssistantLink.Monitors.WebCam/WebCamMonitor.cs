@@ -34,10 +34,10 @@ public class WebCamMonitor(
 
     public string EntityId => this.options.EntityId;
 
-    public Task StartAsync(Func<EntityStateUpdate, CancellationToken, Task> publish, CancellationToken cancellationToken)
+    public Task StartAsync(Func<EntityStateUpdate, CancellationToken, Task> publish, CancellationToken ct)
     {
         this.publish = publish ?? throw new ArgumentNullException(nameof(publish));
-        this.cancellationToken = cancellationToken;
+        this.cancellationToken = ct;
 
         this.monitor.Start(this.RegistryChanged);
         this.CheckRegistry(forcePublish: true);
@@ -45,7 +45,7 @@ public class WebCamMonitor(
         return Task.CompletedTask;
     }
 
-    public Task StopAsync(CancellationToken cancellationToken)
+    public Task StopAsync(CancellationToken ct)
     {
         this.monitor.StopMonitoring();
         this.publish = null;
